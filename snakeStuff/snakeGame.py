@@ -1,7 +1,8 @@
 """
 'Slip Snoot' game by Gavin Ceballos,
 refrenced from the Pygame tutorial on 'The New Boston' youtube channel.
-
+Requires PYGAME and the associated sprites availible on:
+https://github.com/Parsnipss/snoot-slip
 """
 
 import pygame
@@ -96,13 +97,13 @@ def randAppleGen():
     
     return randAppleX, randAppleY
 
-def randPoisonAppleGen(): #CHANGE 2 Poison Apples Can Kill the snake
+def randPoisonAppleGen(): #CHANGE 2 Poison Apples Can Kill the snake (Replication of normal apple code w/ modifications)
     randPoisonAppleX = round(random.randrange(0, display_width - appleThickness))
     randPoisonAppleY = round(random.randrange(0, display_height - appleThickness))
 
     return randPoisonAppleX, randPoisonAppleY
 
-def start_button(): #CHANGE 4 Created a start button
+def start_button(): #CHANGE 4 Created a start button (Documentation about mouse position and press functions)
     text = smallfont.render("Start Game", True, white)
     pygame.draw.rect(gameDisplay, green, (button_x - (button_x_length/2), button_y, button_x_length, button_y_length))
     gameDisplay.blit(text, [button_x - (button_x_length/2),button_y +(button_y_length/2)])
@@ -257,7 +258,7 @@ def gameLoop():
                     if event.key == pygame.K_c:
                         gameLoop()
         
-        #CHANGE 3 Fixed movement to prevent doubling-over
+        #CHANGE 3 Fixed movement to prevent doubling-over (refrenced exsisting code and made full use of 'direction' component
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 gameExit = True
@@ -280,7 +281,7 @@ def gameLoop():
                     lead_x_change = 0
                 elif event.key == pygame.K_ESCAPE:
                     pause()
-                elif event.key == pygame.K_LSHIFT:  #CHANGE 1 Added a "sprint" fucntionality
+                elif event.key == pygame.K_LSHIFT:  #CHANGE 1 Added a "sprint" fucntionality (based on pygame documentation and ideas about using KEYUP)
                     FPS = FPS + 10
             if event.type == pygame.KEYUP:
                 if event.key == pygame.K_LSHIFT:
@@ -315,7 +316,7 @@ def gameLoop():
         
         snake(block_size, snakeList)
 
-        #CHANGE 5 Health Points
+        #CHANGE 5 Health Points (using what we learned about accumulators)
         score(snakeLength - 1, hp)
         
         pygame.display.update()
