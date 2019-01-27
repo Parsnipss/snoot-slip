@@ -54,26 +54,16 @@ smallfont = pygame.font.SysFont("comicsansms", 25)
 medfont = pygame.font.SysFont("comicsansms", 50)
 largefont = pygame.font.SysFont("comicsansms", 80)
 
-#def frames_per_second(snakeLength): #CHANGE 1 Makes snake faster after Score Milestones
-#    if (snakeLength-1) <= 15:
-#        FPS = 15
-#    elif (snakeLength-1) >= 16:
-#        FPS = 18
-#    elif (snakeLength-1) >=30:
-#        FPS = 20
-#    elif (snakeLength-1) >=45:
-#        FPS = 25
-#    return FPS
     
 def pause():
     
     paused = True
     message_to_screen("Paused",
-                      white,
+                      black,
                       -100,
                       size="large")
     message_to_screen("Press ESC to resume or Q to quit.",
-                      white,
+                      black,
                       180)
     pygame.display.update()
     
@@ -94,9 +84,11 @@ def pause():
         clock.tick(5)
         
 
-def score(score):
+def score(score, hp):
     text = smallfont.render("Score: " + str(score), True, black)
     gameDisplay.blit(text, [0,0])
+    text = smallfont.render("HP: " + str(hp), True, black)
+    gameDisplay.blit(text, [0,20])
 
 def randAppleGen():
     randAppleX = round(random.randrange(0, display_width - appleThickness)) #/10.0)*10.0 #block_size is subtracted so that it does not spawn out of bounds
@@ -233,7 +225,8 @@ def gameLoop():
     
     snakeList = []
     snakeLength = 1
-    
+
+    hp = 3
     
     randAppleX, randAppleY = randAppleGen()
     randPoisonAppleX, randPoisonAppleY = randPoisonAppleGen()
@@ -269,25 +262,25 @@ def gameLoop():
             if event.type == pygame.QUIT:
                 gameExit = True
             if event.type == pygame.KEYDOWN: # User Inputs
-                if event.key == pygame.K_LEFT and direction != "right":
+                if event.key == pygame.K_LEFT or event.key == pygame.K_a and direction != "right":
                     direction = "left"
                     lead_x_change = -block_size
                     lead_y_change = 0
-                elif event.key == pygame.K_RIGHT and direction != "left":
+                elif event.key == pygame.K_RIGHT or event.key == pygame.K_d and direction != "left":
                     direction = "right"
                     lead_x_change = block_size
                     lead_y_change = 0
-                elif event.key == pygame.K_UP and direction != "down":
+                elif event.key == pygame.K_UP or event.key == pygame.K_w and direction != "down":
                     direction = "up"
                     lead_y_change = -block_size
                     lead_x_change = 0
-                elif event.key == pygame.K_DOWN and direction != "up":
+                elif event.key == pygame.K_DOWN or event.key == pygame.K_s and direction != "up":
                     direction = "down"
                     lead_y_change = block_size
                     lead_x_change = 0
                 elif event.key == pygame.K_ESCAPE:
                     pause()
-                elif event.key == pygame.K_LSHIFT:  #Added a "sprint" fucntionality
+                elif event.key == pygame.K_LSHIFT:  #CHANGE 1 Added a "sprint" fucntionality
                     FPS = FPS + 10
             if event.type == pygame.KEYUP:
                 if event.key == pygame.K_LSHIFT:
@@ -321,8 +314,9 @@ def gameLoop():
                 gameOver = True
         
         snake(block_size, snakeList)
-        
-        score(snakeLength - 1)
+
+        #CHANGE 5 Health Points
+        score(snakeLength - 1, hp)
         
         pygame.display.update()
         
@@ -336,7 +330,11 @@ def gameLoop():
         #Poisen apple collision
         elif lead_x > randPoisonAppleX and lead_x < randPoisonAppleX + appleThickness or lead_x + block_size > randPoisonAppleX and lead_x + block_size < randPoisonAppleX + appleThickness:
             if lead_y > randPoisonAppleY and lead_y < randPoisonAppleY + appleThickness or lead_y + block_size > randPoisonAppleY and lead_y + block_size < randPoisonAppleY + appleThickness:
-                gameOver = True
+                randAppleX, randAppleY = randAppleGen()
+                randPoisonAppleX, randPoisonAppleY = randPoisonAppleGen()
+                hp = hp - 1
+                if hp == 0:
+                    gameOver = True
         #FPS = frames_per_second(snakeLength)
         clock.tick(FPS)
 
